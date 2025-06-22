@@ -1,4 +1,6 @@
-#
+# Visist Tracker API
+   A simple FastAPI application that tracks visits, health, and uptime, designed for DevOps deployment and containerization.
+   
 ## Local Dev Setup
 ### 1. Clone Repo
 ### 2. Create and activate a virtual environment
