@@ -30,3 +30,25 @@ jobs:
 
     - name: Shutdown app
       run: pkill uvicorn || true
+  
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: docker build -t visit-tracker-api:latest .
+
+    - name: Run container
+      run: |
+        docker run -d -p 8000:8000 --name test-app visit-tracker-api:test
+        sleep 5
+
+    - name: Run health check
+      run: |
+        curl -f --retry 3 --retry-delay 1 http://localhost:8000/health
+
+    - name: Stop and remove container
+      run: docker rm -f test-app
