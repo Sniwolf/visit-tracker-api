@@ -72,3 +72,16 @@ docker run -p 8000:8000 visit-tracker-api
 Then visit:
 http://localhost:8000/health
 
+## 🐳 Run with Docker Compose
+```bash
+docker compose up --build
+```
+
+then visit:
+http://localhost:8000/health
+
+### To stop the app:
+```bash
+docker compose down
+```
+
