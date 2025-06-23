@@ -1,4 +1,4 @@
-# Visist Tracker API
+# Visit Tracker API
    A simple FastAPI application that tracks visits, health, and uptime, designed for DevOps deployment and containerization.
 
 ## Local Dev Setup
@@ -56,4 +56,19 @@ Returns metadata about the app, like uptime, version, etc.
   "uptime": 243
 }
 ```
+
+## 🐳 Run with Docker
+
+### Build the Docker image:
+```bash
+docker build -t visit-tracker-api .
+```
+
+### Run the container:
+```bash
+docker run -p 8000:8000 visit-tracker-api
+```
+
+Then visit:
+http://localhost:8000/health
 

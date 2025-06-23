@@ -1,0 +1,25 @@
+# Python junk
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+
+# Mac/OS-specific
+.DS_Store
+
+# IDE/editor stuff
+.vscode/
+.idea/
+
+# Git & system
+.git/
+*.log
+
+# Other build artifacts
+*.egg-info/
+dist/
+build/
