@@ -85,3 +85,26 @@ http://localhost:8000/health
 docker compose down
 ```
 
+## CI/CD
+This project uses GitHub Actions for continuous integration and delivery:
+- Validates the FastAPI app on push to `main`
+- Builds and pushes a Docker image to Dockerhub if tests pass
+
+### Docker Image
+The latest Docker image is published to [DockerHub](https://hub.docker.com/r/sniwolf/visit-tracker-api)
+
+You can run it locally with:
+```bash
+docker pull sniwolf/visit-tracker-api:latest
+docker run -p 8000:8000 sniwolf/visit-tracker-api
+```
+
+### `.github/workflows/` explination
+```md
+The GitHub Actions workflow is defined in `.github/workflows/main.yml` and includes
+
+- Python app validation
+- Health check endpoint testing
+- Docker image build and test
+- Image publishing to Dockerhub
+```
