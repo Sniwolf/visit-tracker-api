@@ -39,15 +39,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Debug username
-      run: echo "DockerHub user is set" && test -n "${{ secrets.DOCKERHUB_USERNAME }}"
-    
     - name: Build Docker image
       run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/visit-tracker-api:latest .
 
     - name: Run container
       run: |
-        docker run -d -p 8000:8000 --name test-app visit-tracker-api:latest
+        docker run -d -p 8000:8000 --name test-app ${{ secrets.DOCKERHUB_USERNAME }}/visit-tracker-api:latest
         sleep 5
 
     - name: Run health check
