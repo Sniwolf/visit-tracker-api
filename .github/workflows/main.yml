@@ -1,0 +1,35 @@
+name: Build Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify-api:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Run health check
+      run: |
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+        sleep 5  # Wait for the server to start
+        curl -f --retry 3 --retry-delay 1 http://localhost:8000/health
+
+    - name: Shutdown app
+      run: pkill uvicorn || true
