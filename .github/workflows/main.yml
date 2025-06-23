@@ -39,7 +39,7 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Build Docker image
-      run: docker build -t visit-tracker-api:latest .
+      run: docker build -t visit-tracker-api:test .
 
     - name: Run container
       run: |
