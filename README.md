@@ -1,4 +1,6 @@
 # Visit Tracker API
+   ![CI](https://github.com/Sniwolf/visit-tracker-api/actions/workflows/main.yml/badge.svg)
+   
    A simple FastAPI application that tracks visits, health, and uptime, designed for DevOps deployment and containerization.
 
 ## Local Dev Setup
