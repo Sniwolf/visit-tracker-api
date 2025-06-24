@@ -1,6 +1,6 @@
 # Visit Tracker API
    ![CI](https://github.com/Sniwolf/visit-tracker-api/actions/workflows/main.yml/badge.svg)
-   
+
    A simple FastAPI application that tracks visits, health, and uptime, designed for DevOps deployment and containerization.
 
 ## Local Dev Setup
@@ -27,18 +27,32 @@
 
 ## 🧩 Project Structure
 <pre><code> 
-app/ 
-├── main.py # Entrypoint 
-├── api/ 
-│ └── routes.py # All API endpoints 
-├── services/ 
-│ ├── visits.py 
-│ └── info.py 
-├── models/ 
-│ └── responses.py # Pydantic response models 
-├── core/ 
-│ ├── config.py # App config via BaseSettings 
-│ └── state.py # App-level state (e.g., start_time)
+.
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── routes.py
+│   ├── models/
+│   │   └── responses.py
+│   ├── services/
+│   │   ├── visits.py
+│   │   └── info.py
+│   └── core/
+│       └── config.py
+├── .dockerignore
+├── .gitignore
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── README.md
+├── .pre-commit-config.yaml
+├── .github/
+│   └── workflows/
+│       └── main.yml
+└── scripts/
+    ├── setup-local-k8s-macos.sh
+    └── start-minikube-cluster.sh
+
 </code></pre>
 
 ## API Endpoints
@@ -110,3 +124,47 @@ The GitHub Actions workflow is defined in `.github/workflows/main.yml` and inclu
 - Docker image build and test
 - Image publishing to Dockerhub
 ```
+## Running a Local Kubernetes Cluster
+
+This project supports running locally on kubernetes via Minikube.
+
+### Prerequisites (macOS only):
+Run the setup script once to install required tools:
+```bash
+./scripts/setup-local-k8s-macos.sh
+```
+
+This installs and configures:
+- Docker (must already be installed and running)
+- `kubectl` (Kubernetes CLI)
+- `minikube` (Kubernetes local cluster manager)
+
+⚠️ This script is idempotent — you can rerun it safely.
+
+### Start the Kubernetes Cluster
+Use the helper script to start the local cluster and set up your context:
+```bash
+./scripts/start-minikube-cluster.sh
+```
+This script:
+- Starts Minikube (if not already running)
+- Switches kubectl context to Minikube
+- Displays the current cluster status
+- Prints connection details
+
+You can also launch the Kubernetes dashboard with:
+```bash
+minikube dashboard
+```
+
+## Stopping or Deleteing the Cluster
+To stop the Minikube cluster (without deleting it):
+```bash
+minikube stop
+```
+
+To delete the cluster entirely:
+```bash
+minikube delete
+```
+This is useful for resetting the local environment if something goes wrong.
