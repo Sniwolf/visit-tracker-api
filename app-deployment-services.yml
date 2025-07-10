@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visit-tracker-api
+  labels:
+    app: visit-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visit-tracker
+  template:
+    metadata:
+      labels:
+        app: visit-tracker
+    spec:
+      containers:
+      - name: visit-tracker-api
+        image: sniwolf/visit-tracker-api:latest
+        ports:
+        - containerPort: 8000
+          name: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: visit-tracker-service
+spec:
+  type: NodePort
+  selector:
+    app: visit-tracker
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30000

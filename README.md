@@ -168,3 +168,29 @@ To delete the cluster entirely:
 minikube delete
 ```
 This is useful for resetting the local environment if something goes wrong.
+
+## Deploying the app to Minikube
+After starting your Minikube cluster, deploy the application using the following:
+```bash
+kubectl apply -f app-deployment-services.yml
+```
+Once the app is deployed you can use the following to access it:
+```bash
+minikube service visit-tracker-service
+```
+Then use one of the following endpoints to interact with the app:
+- ```/health```
+- ```/visits```
+- ```/info```
+
+
+## Clean Up
+When you're done, you can clean up your Kubernetes environment with:
+```bash
+kubectl delete -f app-deployment-services.yml
+```
+
+You can then use the following command to stop Minikube
+```bash
+minikube stop
+```
