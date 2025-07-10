@@ -12,6 +12,10 @@ counter = 0  # just for now
 def health_check():
     return {"status": "ok"}
 
+@router.get("/ready")
+def readiness_check():
+    return {"status": "ready"}
+
 @router.get("/visits", response_model=VisitsResponse)
 def visits():
     global counter
