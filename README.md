@@ -49,15 +49,21 @@
 ├── .github/
 │   └── workflows/
 │       └── main.yml
-└── scripts/
-    ├── setup-local-k8s-macos.sh
-    └── start-minikube-cluster.sh
+├── scripts/
+│   ├── setup-local-k8s-macos.sh
+│   └── start-minikube-cluster.sh
+└── k8s/
+    ├── prod-deployment.yml
+    └── local-deployment.yml
 
 </code></pre>
 
 ## API Endpoints
 ### ```GET /health```
-Simple health check. Returns ```{"status": "ok}```
+Simple health check. Returns ```{"status": "ok"}```
+
+### ```GET /ready```
+Simple readiness check. Returns ```{"status": "ready"}```
 
 ### ```GET /visits```
 Returns visit count. Returns ```{"count": 3}```
@@ -169,28 +175,89 @@ minikube delete
 ```
 This is useful for resetting the local environment if something goes wrong.
 
-## Deploying the app to Minikube
-After starting your Minikube cluster, deploy the application using the following:
+## Running Locally with Minikube
+### Option 1: Using Prebuilt Image from Dockerhub (simple)
+#### 1. After starting your Minikube cluster, deploy the application using the following:
 ```bash
-kubectl apply -f app-deployment-services.yml
+kubectl apply -f k8s/prod-deployment.yml
 ```
-Once the app is deployed you can use the following to access it:
+#### 2. Once the app is deployed you can use the following to access it:
 ```bash
 minikube service visit-tracker-service
 ```
 Then use one of the following endpoints to interact with the app:
 - ```/health```
+- ```/ready```
 - ```/visits```
 - ```/info```
 
-
-## Clean Up
+#### 3. Clean Up
 When you're done, you can clean up your Kubernetes environment with:
 ```bash
-kubectl delete -f app-deployment-services.yml
+kubectl delete -f k8s/prod-deployment.yml
 ```
 
 You can then use the following command to stop Minikube
 ```bash
 minikube stop
 ```
+
+#### Troubleshooting
+View the logs with
+```bash
+kubectl get pods
+kubectl logs <your-pod-name>
+```
+
+### Option 2: Build and Run Your Own Image (For Local Development)
+This works because the image is built inside Minikube and imagePullPolicy: Never is set in local-deployment.yml, so Kubernetes uses your local image.
+#### 1. Point Docker to Minikube
+```bash
+eval $(minikube docker-env)
+```
+You can verify you docker is in Minikube's Docker context
+```bash
+docker info | grep 'Name'
+```
+It should say something like `name: minikube`
+
+#### 2. Build the image locally:
+```bash
+docker build -t visit-tracker-api:dev .
+```
+#### 3. Deploy using the local development file:
+```bash
+kubectl apply -f k8s/local-deployment.yml
+```
+#### 4. Once the app is deployed you can use the following to access it:
+```bash
+minikube service visit-tracker-service
+```
+Then use one of the following endpoints to interact with the app:
+- ```/health```
+- ```/ready```
+- ```/visits```
+- ```/info```
+
+#### 5. When you're done, you can clean up your Kubernetes environment with:
+```bash
+kubectl delete -f k8s/local-deployment.yml
+```
+
+#### 6. Stop Minikube
+```bash
+minikube stop
+```
+
+#### 7. Reset your shell after dev:
+```bash
+eval $(minikube docker-env -u)
+```
+
+#### Troubleshooting
+View the logs with
+```bash
+kubectl get pods
+kubectl logs <your-pod-name>
+```
+
