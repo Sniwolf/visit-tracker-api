@@ -279,11 +279,11 @@ This project now supports deployment via a custom [Helm](https://helm.sh/) chart
    ```
 2. **Deploy with Helm** 
    ```bash
-   helm install visit-tracker-api ./visit-tracker-api
+   helm install visit-tracker-api ./helm
    ```
    ***Or upgrade***
    ```bash
-   helm upgrade --install visit-tracker-api ./visit-tracker-api
+   helm upgrade --install visit-tracker-api ./helm
    ```
 3. ***Access the Service***
    ```bash
