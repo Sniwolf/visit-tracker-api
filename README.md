@@ -261,3 +261,57 @@ kubectl get pods
 kubectl logs <your-pod-name>
 ```
 
+## 🚀 Helm Chart Deployment
+
+This project now supports deployment via a custom [Helm](https://helm.sh/) chart.
+
+### Requirements
+
+- [Minikube](https://minikube.sigs.k8s.io/docs/) (for local Kubernetes testing)
+- [Helm](https://helm.sh/) 3.x
+- Docker (used by Minikube cluster to build and run the image locally)
+
+### Setup Instructions
+
+1. **Start Minikube** (if not already running):
+   ```bash
+   bash scripts/start-minikube-cluster.sh
+   ```
+2. **Deploy with Helm** 
+   ```bash
+   helm install visit-tracker-api ./visit-tracker-api
+   ```
+   ***Or upgrade***
+   ```bash
+   helm upgrade --install visit-tracker-api ./visit-tracker-api
+   ```
+3. ***Access the Service***
+   ```bash
+   minikube service visit-tracker-api
+   ```
+   Then use one of the following endpoints to interact with the app:
+   - ```/health```
+   - ```/ready```
+   - ```/visits```
+   - ```/info```
+
+4. ***🧹Cleanup***
+   To remove the deployed resources from your Minikube cluster:
+   ```bash
+   helm uninstall visit-tracker-api
+   ```
+   To stop your Minikube Cluster:
+   ```bash
+   minikube stop
+   ```
+   To delete your Minikube cluster:
+   ```bash
+   minikube delete
+   ```
+
+Notes
+ - Probes are configured with custom paths (/health for liveness, /ready for readiness) on port 8000.
+
+ - You can find or modify these settings in values.yaml.
+
+ - Default service type is NodePort for local access in Minikube.

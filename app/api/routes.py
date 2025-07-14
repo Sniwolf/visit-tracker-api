@@ -8,6 +8,10 @@ router = APIRouter()
 
 counter = 0  # just for now
 
+@router.get("/")
+def root():
+    return {"status": "visit-tracker-api is running"}
+
 @router.get("/health")
 def health_check():
     return {"status": "ok"}
