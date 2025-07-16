@@ -1,9 +1,30 @@
 # Visit Tracker API
-   ![CI](https://github.com/Sniwolf/visit-tracker-api/actions/workflows/main.yml/badge.svg)
+![CI](https://github.com/Sniwolf/visit-tracker-api/actions/workflows/main.yml/badge.svg)
 
-   A simple FastAPI application that tracks visits, health, and uptime, designed for DevOps deployment and containerization.
+A simple FastAPI application that tracks visits, health, and uptime — designed to showcase containerization, CI/CD pipelines, and Kubernetes/Helm-based deployment.
 
-## Local Dev Setup
+---
+
+## 📘 API Endpoints
+
+| Method | Path     | Description                  |
+|--------|----------|------------------------------|
+| GET    | `/health` | Simple health check          |
+| GET    | `/ready`  | Readiness check              |
+| GET    | `/visits` | Returns current visit count  |
+| GET    | `/info`   | Returns app metadata         |
+
+Example response from `/info`:
+```json
+{
+  "app_name": "Visit Tracker",
+  "version": "1.0.0",
+  "author": "Sni",
+  "uptime": 243
+}
+```
+
+## ⚙️ Local Dev Setup (FastAPI only)
 ### 1. Clone Repo
    ```bash
    git clone https://github.com/Sniwolf/visit-tracker-api.git
@@ -24,60 +45,6 @@
 
 ### 4. Run the app
    `uvicorn app.main:app --reload`
-
-## 🧩 Project Structure
-<pre><code> 
-.
-├── app/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── routes.py
-│   ├── models/
-│   │   └── responses.py
-│   ├── services/
-│   │   ├── visits.py
-│   │   └── info.py
-│   └── core/
-│       └── config.py
-├── .dockerignore
-├── .gitignore
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-├── README.md
-├── .pre-commit-config.yaml
-├── .github/
-│   └── workflows/
-│       └── main.yml
-├── scripts/
-│   ├── setup-local-k8s-macos.sh
-│   └── start-minikube-cluster.sh
-└── k8s/
-    ├── prod-deployment.yml
-    └── local-deployment.yml
-
-</code></pre>
-
-## API Endpoints
-### ```GET /health```
-Simple health check. Returns ```{"status": "ok"}```
-
-### ```GET /ready```
-Simple readiness check. Returns ```{"status": "ready"}```
-
-### ```GET /visits```
-Returns visit count. Returns ```{"count": 3}```
-
-### ```GET /info```
-Returns metadata about the app, like uptime, version, etc.
-```json
-{
-  "app_name": "Visit Tracker",
-  "version": "1.0.0",
-  "author": "Sni",
-  "uptime": 243
-}
-```
 
 ## 🐳 Run with Docker
 
@@ -107,12 +74,14 @@ http://localhost:8000/health
 docker compose down
 ```
 
-## CI/CD
-This project uses GitHub Actions for continuous integration and delivery:
-- Validates the FastAPI app on push to `main`
-- Builds and pushes a Docker image to Dockerhub if tests pass
+## 🔁 CI/CD: GitHub Actions + Docker Hub
+This project uses GitHub Actions for:
+- FastAPI validation on push
+- Health endpoint testing
+- Docker image build and test
+- Image push to DockerHub
 
-### Docker Image
+### Run the latest version locally:
 The latest Docker image is published to [DockerHub](https://hub.docker.com/r/sniwolf/visit-tracker-api)
 
 You can run it locally with:
@@ -121,197 +90,166 @@ docker pull sniwolf/visit-tracker-api:latest
 docker run -p 8000:8000 sniwolf/visit-tracker-api
 ```
 
-### `.github/workflows/` explination
-```md
-The GitHub Actions workflow is defined in `.github/workflows/main.yml` and includes
-
-- Python app validation
-- Health check endpoint testing
-- Docker image build and test
-- Image publishing to Dockerhub
+### The CI workflow is defined in:
+```text
+.github/workflows/main.yaml
 ```
-## Running a Local Kubernetes Cluster
 
-This project supports running locally on kubernetes via Minikube.
+## Running Locally with Minikube
 
-### Prerequisites (macOS only):
+This project supports multiple deployment modes inside Minikube.
+
+### 🔧 Prerequisites (macOS)
 Run the setup script once to install required tools:
 ```bash
 ./scripts/setup-local-k8s-macos.sh
 ```
 
-This installs and configures:
-- Docker (must already be installed and running)
-- `kubectl` (Kubernetes CLI)
-- `minikube` (Kubernetes local cluster manager)
+This installs:
+- Docker (must be installed and running)
+- kubectl (Kubernetes CLI)
+- minikube (local Kubernetes cluster manager)
+- helm (Kubernetes package manager)
 
-⚠️ This script is idempotent — you can rerun it safely.
-
-### Start the Kubernetes Cluster
-Use the helper script to start the local cluster and set up your context:
+#### Start your cluster:
 ```bash
 ./scripts/start-minikube-cluster.sh
 ```
-This script:
-- Starts Minikube (if not already running)
-- Switches kubectl context to Minikube
-- Displays the current cluster status
-- Prints connection details
-
 You can also launch the Kubernetes dashboard with:
 ```bash
 minikube dashboard
 ```
 
-## Stopping or Deleteing the Cluster
-To stop the Minikube cluster (without deleting it):
+### 📄 Option 1: Raw Kubernetes YAML (Prebuilt Image)
+1. Deploy:
 ```bash
-minikube stop
+kubectl apply -f k8s/prod-deployment.yaml
 ```
 
-To delete the cluster entirely:
-```bash
-minikube delete
-```
-This is useful for resetting the local environment if something goes wrong.
-
-## Running Locally with Minikube
-### Option 1: Using Prebuilt Image from Dockerhub (simple)
-#### 1. After starting your Minikube cluster, deploy the application using the following:
-```bash
-kubectl apply -f k8s/prod-deployment.yml
-```
-#### 2. Once the app is deployed you can use the following to access it:
+2. Access:
 ```bash
 minikube service visit-tracker-service
 ```
-Then use one of the following endpoints to interact with the app:
-- ```/health```
-- ```/ready```
-- ```/visits```
-- ```/info```
 
-#### 3. Clean Up
-When you're done, you can clean up your Kubernetes environment with:
-```bash
-kubectl delete -f k8s/prod-deployment.yml
-```
-
-You can then use the following command to stop Minikube
-```bash
+3. Clean up:
+```bash 
+kubectl delete -f k8s/prod-deployment.yaml
 minikube stop
 ```
 
-#### Troubleshooting
-View the logs with
+### 📦 Option 2: Helm Deployment (Prebuilt Image)
+1. Deploy:
 ```bash
-kubectl get pods
-kubectl logs <your-pod-name>
+helm upgrade --install visit-tracker-api ./helm
+```
+2. Access:
+```bash
+minikube service visit-tracker-api
+```
+3. Clean up:
+```bash
+helm uninstall visit-tracker-api
+minikube stop
 ```
 
-### Option 2: Build and Run Your Own Image (For Local Development)
-This works because the image is built inside Minikube and imagePullPolicy: Never is set in local-deployment.yml, so Kubernetes uses your local image.
-#### 1. Point Docker to Minikube
+### 🛠 Option 3: Helm Deployment (Local Image)
+This uses `values.local.yaml` with `imagePullPolicy:Never`.
+1. Point Docker to Minikube:
 ```bash
 eval $(minikube docker-env)
 ```
-You can verify you docker is in Minikube's Docker context
-```bash
-docker info | grep 'Name'
-```
-It should say something like `name: minikube`
-
-#### 2. Build the image locally:
+2. Build the image inside Minikube:
 ```bash
 docker build -t visit-tracker-api:dev .
 ```
-#### 3. Deploy using the local development file:
-```bash
-kubectl apply -f k8s/local-deployment.yml
-```
-#### 4. Once the app is deployed you can use the following to access it:
-```bash
-minikube service visit-tracker-service
-```
-Then use one of the following endpoints to interact with the app:
-- ```/health```
-- ```/ready```
-- ```/visits```
-- ```/info```
 
-#### 5. When you're done, you can clean up your Kubernetes environment with:
+3. Deploy with Helm:
 ```bash
-kubectl delete -f k8s/local-deployment.yml
+helm upgrade --install visit-tracker ./helm -f helm/values.local.yaml
 ```
 
-#### 6. Stop Minikube
+4. Access:
 ```bash
+minikube service visit-tracker
+```
+
+5. Clean up:
+```bash
+helm uninstall visit-tracker
 minikube stop
-```
-
-#### 7. Reset your shell after dev:
-```bash
 eval $(minikube docker-env -u)
 ```
 
-#### Troubleshooting
-View the logs with
+### 🐢 Alternate: Raw Kubernetes Deployment (Local Dev)
+1. Point Docker to Minikube
 ```bash
-kubectl get pods
-kubectl logs <your-pod-name>
+eval $(minikube docker-env)
+```
+Verify:
+```bash
+docker info | grep 'Name'
+# Should return: name: minikube
 ```
 
-## 🚀 Helm Chart Deployment
+2. Build the image locally inside Minikube:
+```bash
+docker build -t visit-tracker-api: dev .
+```
 
-This project now supports deployment via a custom [Helm](https://helm.sh/) chart.
+3. Apply the local deployment YAML:
+```bash
+kubectl apply -f k8s/local-deployment.yaml
+```
 
-### Requirements
+4. Access the app:
+```bash
+minikube service visit-tracker-service
+```
 
-- [Minikube](https://minikube.sigs.k8s.io/docs/) (for local Kubernetes testing)
-- [Helm](https://helm.sh/) 3.x
-- Docker (used by Minikube cluster to build and run the image locally)
+5. Clean up:
+```bash
+kubectl delete -f k8s/local-deployment.yaml
+minikube stop
+eval $(minikube docker-env -u)
+```
 
-### Setup Instructions
+## 🔎 Troubleshooting
+Check pod logs:
+```bash
+kubectl get pods
+kubectl logs <pod-name>
+```
 
-1. **Start Minikube** (if not already running):
-   ```bash
-   bash scripts/start-minikube-cluster.sh
-   ```
-2. **Deploy with Helm** 
-   ```bash
-   helm install visit-tracker-api ./helm
-   ```
-   ***Or upgrade***
-   ```bash
-   helm upgrade --install visit-tracker-api ./helm
-   ```
-3. ***Access the Service***
-   ```bash
-   minikube service visit-tracker-api
-   ```
-   Then use one of the following endpoints to interact with the app:
-   - ```/health```
-   - ```/ready```
-   - ```/visits```
-   - ```/info```
+## Project Structure
+```text
+.
+├── app/                       # FastAPI app code
+│   ├── routes.py
+│   ├── services/
+│   ├── models/
+│   └── core/
+├── helm/                     # Helm chart and templates
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   ├── values.local.yaml
+│   └── templates/
+├── k8s/                      # Raw Kubernetes manifests
+│   ├── prod-deployment.yml
+│   └── local-deployment.yml
+├── .github/                  # GitHub Actions workflow
+│   └── workflows/
+├── scripts/                  # Helper setup scripts
+│   ├── setup-local-k8s-macos.sh
+│   └── start-minikube-cluster.sh
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+```
 
-4. ***🧹Cleanup***
-   To remove the deployed resources from your Minikube cluster:
-   ```bash
-   helm uninstall visit-tracker-api
-   ```
-   To stop your Minikube Cluster:
-   ```bash
-   minikube stop
-   ```
-   To delete your Minikube cluster:
-   ```bash
-   minikube delete
-   ```
-
-Notes
- - Probes are configured with custom paths (/health for liveness, /ready for readiness) on port 8000.
-
- - You can find or modify these settings in values.yaml.
-
- - Default service type is NodePort for local access in Minikube.
+## 📝 Notes
+- Readiness and liveness probes use:
+  - /health (liveness)
+  - /ready (readiness)
+- Port 8000 is exposed on all deployment methods
+- Helm installs use NodePort by default for Minikube compatibility

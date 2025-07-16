@@ -1,0 +1,24 @@
+image:
+  repository: visit-tracker-api
+  tag: dev
+  pullPolicy: Never
+
+service:
+  type: NodePort
+  port: 8000
+
+containerPort: 8000
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8000
+  initialDelaySeconds: 5
+  failureThreshold: 3

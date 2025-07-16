@@ -63,3 +63,16 @@ else
 fi
 
 echo "Local Kubernetes setup complete!"
+
+echo "=== Checking for Helm... ==="
+if ! command -v helm &> /dev/null; then
+    if command -v brew &> /dev/null; then
+        echo "Installing Helm via Homebrew..."
+        brew install helm
+    else
+        echo "Homebrew not found. Please install Helm manually:"
+        echo "https://helm.sh/docs/intro/install/"
+    fi
+else
+    echo "Helm is already installed: version $(helm version --short)"
+fi
