@@ -25,3 +25,6 @@ readinessProbe:
 
 appConfig:
   ENVIRONMENT: development
+
+appSecrets:
+  SECRET_TOKEN: "dev-token-123"

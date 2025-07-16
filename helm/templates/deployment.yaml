@@ -63,6 +63,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "visit-tracker-api.fullname" . }}-config
+            - secretRef:
+                name: {{ include "visit-tracker-api.fullname" . }}-secret
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

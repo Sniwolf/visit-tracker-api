@@ -9,3 +9,4 @@ class InfoResponse(BaseModel):
     author: str = "Your Name"
     uptime: int
     environment: str
+    secret_token: str

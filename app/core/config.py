@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     author: str = "Sni"
     debug: bool = True
     environment: str = "unknown"
+    secret_token: str = "unset"
 
     class Config:
         env_file = ".env"
