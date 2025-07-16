@@ -60,11 +60,20 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "visit-tracker-api.fullname" . }}-secret
+                  key: SECRET_KEY
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "visit-tracker-api.fullname" . }}-secret
+                  key: DATABASE_PASSWORD
           envFrom:
             - configMapRef:
                 name: {{ include "visit-tracker-api.fullname" . }}-config
-            - secretRef:
-                name: {{ include "visit-tracker-api.fullname" . }}-secret
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

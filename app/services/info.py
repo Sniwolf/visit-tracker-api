@@ -10,5 +10,4 @@ def app_info(start_time: float) -> InfoResponse:
         author=settings.author,
         uptime=int(time.time() - start_time),
         environment=settings.environment,
-        secret_token=settings.secret_token
     )

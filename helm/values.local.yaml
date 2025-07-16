@@ -26,5 +26,8 @@ readinessProbe:
 appConfig:
   ENVIRONMENT: development
 
-appSecrets:
-  SECRET_TOKEN: "dev-token-123"
+secrets:
+  enabled: true
+  values:
+    SECRET_KEY: "placeholder-secret-key"
+    DATABASE_PASSWORD: "placeholder-db-pass"
