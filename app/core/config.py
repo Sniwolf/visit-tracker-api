@@ -5,5 +5,11 @@ class Settings(BaseSettings):
     version: str = "1.0.0"
     author: str = "Sni"
     debug: bool = True
+    environment: str = "unknown"
+
+    class Config:
+        env_file = ".env"
+        env_prefix = ""
+        case_sensitive = False
 
 settings = Settings()

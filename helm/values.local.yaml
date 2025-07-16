@@ -22,3 +22,6 @@ readinessProbe:
     port: 8000
   initialDelaySeconds: 5
   failureThreshold: 3
+
+appConfig:
+  ENVIRONMENT: development

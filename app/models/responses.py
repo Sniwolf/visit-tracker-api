@@ -7,4 +7,5 @@ class InfoResponse(BaseModel):
     app_name: str
     version: str
     author: str = "Your Name"
-    uptime: int 
+    uptime: int
+    environment: str
