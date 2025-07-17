@@ -58,3 +58,10 @@ secrets:
   values:
     SECRET_KEY: "placeholder-secret-key"
     DATABASE_PASSWORD: "placeholder-db-pass"
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi
+  storageClass: "standard"
+  mountPath: /data
