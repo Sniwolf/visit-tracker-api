@@ -237,6 +237,52 @@ kubectl get pods
 kubectl logs <pod-name>
 ```
 
+## 🌐 Accessing the App via Ingress
+This project supports local ingress routing through a custom hostname using Minikube.
+
+### Prequisites
+- You must have run the Helm deployment with Ingress enabled (either via `values.yaml` or `values.local.yaml`)
+- `minikube tunnel` must be running in a separate terminal window while testing ingress routes.
+
+### Example Ingress Host
+By default, the chart configures and ingress with the host:
+```loa
+visit.local
+```
+
+### Step-by-Step
+1. Update your `/etc/hosts` file:
+Add the following line (you may need `sudo` to edit this file):
+```lua
+127.0.0.1   visit.local
+```
+
+2. Start the Minikube tunnel
+In a separate terminal window:
+```bash
+minikube tunnel
+```
+This sets up routing for the ingress controller to your local machine.
+
+3. Access the app
+Once the tunnel is active, visit:
+```arduino
+http://visit.local
+```
+Then test any of these endpoints:
+- `/health`
+- `/ready`
+- `/visits`
+- `/info`
+
+4. Cleanup
+When finished
+```bash
+helm uninstall visit-tracker
+minikube stop
+minikube delete   #optional
+```
+
 ## Project Structure
 ```text
 .
