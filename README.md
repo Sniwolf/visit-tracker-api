@@ -120,6 +120,23 @@ You can also launch the Kubernetes dashboard with:
 minikube dashboard
 ```
 
+### 🔁 Autoscaling
+This project supports Horizontal Pod Autoscaling (HPA) via the Helm chart.
+- Autoscaler is enabled by default and scales between 1 and 3 replicas
+- CPU utilization target: 70%
+- Configurable in `values.yaml` and `values.local.yaml` under the `autoscaling` block.
+
+To view the autoscaler:
+```bash
+kubectl get hpa
+```
+To disable autoscaling, set `autoscaling.enabled: false` in your values file.
+
+### 📦 Resource Requests & Limits
+The deployment supports setting CPU and memory resource requests and limits. 
+
+By default the section is enabled in `values.yaml` and `values.local.yaml`. You can deactivate these by commenting out the resources section in the same files.
+
 ### 📄 Option 1: Raw Kubernetes YAML (Prebuilt Image)
 1. Deploy:
 ```bash
